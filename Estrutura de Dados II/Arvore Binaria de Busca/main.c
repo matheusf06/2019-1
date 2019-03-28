@@ -1,34 +1,16 @@
-#include "arvore.h"
+#include "arvore_de_busca.h"
 
-int main(int argc, char* argv[]){
-    Arvore *a = constroi_arv ('a',
-        constroi_arv('b',
-        cria_arv_vazia(),
-        constroi_arv('d',cria_arv_vazia(),cria_arv_vazia())
-        ),
-        constroi_arv('c',
-        constroi_arv('e',cria_arv_vazia(),cria_arv_vazia()),
-        constroi_arv('f',cria_arv_vazia(),cria_arv_vazia()))
-    );
+int main () {
+    Arvore *a = NULL;
+    a = inserir (a, 50);
+    a = inserir (a, 30);
+    a = inserir (a, 90);
+    a = inserir (a, 20);
+    a = inserir (a, 40);
+    a = inserir (a, 95);
+    a = inserir (a, 10);
+    a = inserir (a, 35);
+    a = inserir (a, 45);
 
-    imprimir_arv_pre(a);
-    printf("\n");
-    
-    imprimir_arv_in(a);
-    printf("\n");
-    
-    imprimir_arv_pos(a);
-    printf("\n");
-    
-    imprimir_arv_marcadores(a);
-    printf("\n");
-
-    //printf("%d", pertence_arv(a, argv[1][0]));
-    //printf("\n");
-
-    printf("%d nos\n", conta_nos(a));
-    printf("altura %d\n", calcula_altura_arvore(a));
-    printf("%d nos folha\n", calcula_nos_folha(a));
-    
-    return 0;
+    printf("%d", ancestral(a, 10, 14));
 }
