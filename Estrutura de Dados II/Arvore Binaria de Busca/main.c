@@ -2,15 +2,13 @@
 
 int main () {
     Arvore *a = NULL;
-    a = inserir (a, 50);
-    a = inserir (a, 30);
-    a = inserir (a, 90);
     a = inserir (a, 20);
-    a = inserir (a, 40);
-    a = inserir (a, 95);
+    a = inserir (a, 8);
+    a = inserir (a, 4);
+    a = inserir (a, 12);
     a = inserir (a, 10);
-    a = inserir (a, 35);
-    a = inserir (a, 45);
+    a = inserir (a, 14);
+    a = inserir (a, 22);
 
     printf("%d", ancestral(a, 10, 14));
 }

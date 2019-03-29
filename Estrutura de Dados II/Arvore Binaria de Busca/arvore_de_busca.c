@@ -137,11 +137,16 @@ int maior_ramo(Arvore* a){
 }
 
 int ancestral(Arvore* a, int e1, int e2){
-    if(a->esq >= e1 && a->dir <= e2){
 
-    }
-    //ou
     if(a){
-        int esq = 
+        int esq = ancestral(a->esq, e1, e2);
+        int dir = ancestral(a->dir, e1, e2);
+        if(esq || dir){
+            return esq + dir;
+        }
+        if(buscar(a, e1) && buscar(a, e2)){
+            return a->info;
+        }
     }
+    return 0;
 }
