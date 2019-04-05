@@ -1,4 +1,4 @@
-#include "arvore_de_busca.h"
+|#include "arvore_de_busca.h"
 
 int buscar(Arvore* a, int v){
     if(!a){
@@ -10,6 +10,8 @@ int buscar(Arvore* a, int v){
     }else{
         return 1;
     }
+    //asdasd
+
 }
 
 Arvore* inserir(Arvore* a, int v){
