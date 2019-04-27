@@ -30,16 +30,16 @@ Arvore* inserir(Arvore* a, int v){
     return a;
 }
 
-Arvore* remover(Arvore* a, int v){
+Arvore* removerExata(Arvore* a, int v){
     if(!a){
         return NULL;
     }
     else{
         if(a->info > v){
-            a->esq = remover(a->esq, v);
+            a->esq = removerExata(a->esq, v);
         }
         else if(a->info < v){
-            a->dir = remover(a->dir, v);
+            a->dir = removerExata(a->dir, v);
         }
         else{
             if((a->esq == NULL) && a->dir == NULL){
@@ -62,11 +62,76 @@ Arvore* remover(Arvore* a, int v){
                     tmp = tmp->dir;
                 }
                 a->info = v;
-                a->esq = remover(a->esq, v);
+                tmp->info = v;
+                a->esq = removerExata(a->esq, v);
             }
         }
         return a;
     }
+}
+
+Arvore* remover(Arvore* a, int v){
+    if(a != NULL){
+        if(a->info > v){
+            //estou em um no maior que a chave
+            a->esq = remover(a->esq, v);
+            //vou para esquerda
+        }
+        else if(a->info < v){
+            //estou em um no menor que a chave
+            a->dir = remover(a->dir, v);
+            //vou para a direita
+        }
+        else{
+            //encontrei o no da chave
+            //se ele tem dois filhos
+            if(a->dir && a->esq){
+                //procurar pelo menor filho a direita 
+                Arvore* tmp = a->esq;
+                //ir até o pai do ultimo no para a esquerda
+                while(tmp->dir){
+                    tmp = tmp->dir;
+                }
+                a->info = tmp->info;
+                tmp->info = v;
+                a->esq = remover(a->esq, v);
+            }
+            //se ele so tem o filho da direita
+            else if(a->dir){
+                //limpar o no
+                //retornar seu unico filho
+                Arvore* tmp = a->dir;
+                free (a);
+                a = tmp;
+            }
+            //se ele so tem o filho da esquerda
+            else if(a->esq){
+                //limpar o no
+                //retornar seu unico filho
+                Arvore* tmp = a->esq;
+                free(a);
+                a = tmp;
+            }
+            //se ele nao tem filho
+            else{
+                //limpar o no
+                //retornar nulo
+                free(a);
+                a = NULL;
+            }
+        } 
+        return a;
+    }
+    return NULL;
+}
+
+void imprime_pre_ordem(Arvore* a){
+
+	if(a){
+		printf("%d, ", a->info);
+		imprime_pre_ordem(a->esq);
+		imprime_pre_ordem(a->dir);
+	}	 
 }
 
 void imprime_decrescente(Arvore* a){

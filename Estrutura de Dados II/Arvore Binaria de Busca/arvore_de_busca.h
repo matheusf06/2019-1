@@ -10,8 +10,10 @@ typedef struct arvore{
 
 Arvore* inserir(Arvore* a, int v);
 Arvore* remover(Arvore* a, int v);
+Arvore* removerExata(Arvore* a, int v);
 
 void imprime_decrescente(Arvore* a);
+void imprime_pre_ordem(Arvore* a);
 
 Arvore* preencheNElementos(int n);
 Arvore* preencheNAleatorios(int n);
