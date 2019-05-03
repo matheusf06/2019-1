@@ -1,5 +1,5 @@
 #include "arvore_de_busca.h"
-
+//revisaooo
 int main () {
     Arvore *a = NULL;
     a = inserir (a, 20);
