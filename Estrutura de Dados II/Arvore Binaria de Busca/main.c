@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "arvore_de_busca.h"
-
+//revisaooo
 int main () {
     Arvore *b = NULL;
     b = inserir (b, 10);
