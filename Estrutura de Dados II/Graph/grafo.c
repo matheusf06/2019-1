@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BRANCO 0
+#define CINZA 1
+#define PRETO 2
+#define NIL -1
+
+
 /*Estrutura para um nó em uma lista encadeada: */
 typedef struct noA {
    int id;          /*Identificador armazenado no nó. */
@@ -11,6 +17,7 @@ typedef struct noA {
 /*Estrutura de Grafo com lista de adjacências: */
 typedef struct grafoA {
    int E; /* Quantidade de arestas. */
+	// tamanho
    int V; /* Quantidade de vértices. */
    NoA **Adj; /* Lista de adjacências. */
 } GrafoA;
@@ -19,6 +26,13 @@ typedef struct grafoA {
 typedef struct noM {
    int peso;       /*Peso armazenado na aresta. */
 } NoM;
+
+typedef struct dfs{
+	int cor;
+	int pai;
+	int finalizado;
+	int descoberto;
+} DFS;
 
 /*Estrutura de Grafo com matriz de adjacências: */
 typedef struct grafoM {
@@ -299,53 +313,84 @@ int numeroDeArestasSaidoDeVerticeGrafoM(int u, GrafoM *G){
 	return contador;
 }
 
+void Caminho_DFS(int NoInicial, DFS* V){
+	int pai_do_inicial = V[NoInicial].pai;
+	printf("Caminho: %d ", NoInicial);
+	while(pai_do_inicial != NIL){
+		printf("%d ", pai_do_inicial);
+		pai_do_inicial = V[pai_do_inicial].pai;
+	}
+	printf("\n");
+}
+
+void DFS_Visit(GrafoA *G, int u, DFS* V, int *tempo){		
+	V[u].cor = CINZA;
+	(*tempo)++;
+	V[u].descoberto = *tempo;
+	NoA* hospede = G->Adj[u];
+	while(hospede != NULL) {
+		if(V[hospede->id].cor == BRANCO) {
+			printf("Aresta arvore: ( %d -> %d )\n", u, hospede->id);
+			V[hospede->id].pai = u;
+			DFS_Visit(G, hospede->id, V, tempo);
+		}
+		else{
+			printf("Aresta outra : ( %d -> %d )\n", u, hospede->id);
+		}
+		hospede = hospede->next;
+	}
+	(*tempo)++;
+	V[u].cor = PRETO;
+	V[u].finalizado = *tempo;
+}
+
+void Busca_Profundidade (GrafoA *G) {
+	int u;
+	DFS *V = (DFS *)malloc(G->V * sizeof(DFS)); 
+		for (u = 0; u < G->V; u++) {
+		V[u].cor = BRANCO;
+		V[u].pai = NIL;
+		V[u].descoberto = NIL;
+		V[u].finalizado = NIL;
+	}
+	
+	int tempo = 0;
+	for (u = 0; u < G->V; u++) {
+		if (V[u].cor == BRANCO) {
+			DFS_Visit (G, u, V, &tempo);
+		}
+	}
+	Caminho_DFS (3, V);
+	Caminho_DFS (8, V);
+	Caminho_DFS (11, V);
+}
+
 
 /* */
 int main () {
+	GrafoA* grafo = criar_grafo_adj(12);
 
-   int Va = 6; /*Número de vértices*/
-   GrafoA* Ga = criar_grafo_adj (Va);
-	adicionarPesoArestaGrafoAdjDirecionado(0, 1, 1, Ga);	
-	adicionarPesoArestaGrafoAdjDirecionado(0, 3, 5, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(1, 3, 8, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(2, 0, 5, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(2, 3, 4, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(3, 3, 6, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(3, 4, 3, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(4, 2, 7, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(4, 5, 9, Ga);
-	adicionarPesoArestaGrafoAdjDirecionado(5, 0, 2, Ga);
+	adicionarArestaGrafoAdjDirecionado(0, 1, grafo);
+	adicionarArestaGrafoAdjDirecionado(0, 3, grafo);
+	adicionarArestaGrafoAdjDirecionado(1, 2, grafo);
+	adicionarArestaGrafoAdjDirecionado(2, 5, grafo);
+	adicionarArestaGrafoAdjDirecionado(5, 4, grafo);
+	adicionarArestaGrafoAdjDirecionado(5, 6, grafo);
+	adicionarArestaGrafoAdjDirecionado(6, 4, grafo);
+	adicionarArestaGrafoAdjDirecionado(6, 3, grafo);
+	adicionarArestaGrafoAdjDirecionado(6, 0, grafo);
+	adicionarArestaGrafoAdjDirecionado(4, 1, grafo);
 
-	printGrafoAPesos(Ga);
-	printf("%d incidentes sobre %d\n", numeroDeArestasIncidentesSobreGrafoA(3, Ga), 3);
-	printf("%d saem de %d\n", numeroDeArestasSaindoDeVerticeGrafoA(4, Ga), 4);
-	printf("vertices adjacentes ao vertice 2: ");
-	verticesAdjacentesAoVerticeGrafoA(2, Ga);
-	printf("\n");
-   liberar_grafo_adj (Ga);
+	adicionarArestaGrafoAdjDirecionado(7, 8, grafo);
 
+	adicionarArestaGrafoAdjDirecionado(9, 10, grafo);
+	adicionarArestaGrafoAdjDirecionado(10, 11, grafo);
+	adicionarArestaGrafoAdjDirecionado(11, 9, grafo);
 
-   int Vm = 6; /*Número de vértices*/
-   GrafoM* Gm = criar_grafo_mat (Vm);
-	adicionarPesoArestaGrafoMatDirecionado(0, 1, 1, Gm);	
-	adicionarPesoArestaGrafoMatDirecionado(0, 3, 5, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(1, 3, 8, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(2, 0, 5, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(2, 3, 4, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(3, 3, 6, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(3, 4, 3, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(4, 2, 7, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(4, 5, 9, Gm);
-	adicionarPesoArestaGrafoMatDirecionado(5, 0, 2, Gm);
+	Busca_Profundidade(grafo);
 
-	printGrafoM(Gm);
-	printf("%d incidentes sobre %d\n", numeroDeArestasIncidentesSobreGrafoM(3, Gm), 3);
-	printf("%d saem de %d\n", numeroDeArestasSaidoDeVerticeGrafoM(4, Gm), 4);
-	printf("vertices adjacentes ao vertice 2: ");
-	verticesAdjacentesAoVerticeGrafoM(2, Gm);
-	printf("\n");
+	printGrafoA(grafo);
 
-   liberar_grafo_mat (Gm);
-
-   return 0;
+	liberar_grafo_adj(grafo);
 }
+	
