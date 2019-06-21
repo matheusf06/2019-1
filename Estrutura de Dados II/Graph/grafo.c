@@ -4,6 +4,7 @@
 #define BRANCO 0
 #define CINZA 1
 #define PRETO 2
+#define VERMELHO 3
 #define NIL -1
 
 
@@ -330,18 +331,44 @@ void DFS_Visit(GrafoA *G, int u, DFS* V, int *tempo){
 	NoA* hospede = G->Adj[u];
 	while(hospede != NULL) {
 		if(V[hospede->id].cor == BRANCO) {
-			printf("Aresta arvore: ( %d -> %d )\n", u, hospede->id);
+			printf("Aresta arvore: ( %d - %d )\n", u, hospede->id);
 			V[hospede->id].pai = u;
 			DFS_Visit(G, hospede->id, V, tempo);
 		}
 		else{
-			printf("Aresta outra : ( %d -> %d )\n", u, hospede->id);
+			printf("Aresta outra : ( %d - %d )\n", u, hospede->id);
 		}
 		hospede = hospede->next;
 	}
 	(*tempo)++;
 	V[u].cor = PRETO;
 	V[u].finalizado = *tempo;
+}
+
+void visitBipartido(GrafoA* G, int u, DFS* V, int *tempo, int coloracao){
+	V[u].cor = coloracao;
+	(*tempo)++;
+	V[u].descoberto = *tempo;
+	NoA* hospede = G->Adj[u];
+	while(hospede != NULL) {
+		if(V[hospede->id].cor == BRANCO) {
+			V[hospede->id].pai = u;
+			visitBipartido(G, hospede->id, V, tempo, (coloracao == PRETO ? VERMELHO : PRETO));
+		}
+		else if(V[hospede->id].cor == VERMELHO){
+			exit(1);
+		}
+		hospede = hospede->next;
+	}
+	(*tempo)++;
+	V[u].cor = PRETO;
+	V[u].finalizado = *tempo;
+
+}
+
+void ehBipartido(GrafoA *G, int u, DFS* V, int *tempo){
+	//V[u].cor = coloracao;
+
 }
 
 void Busca_Profundidade (GrafoA *G) {
@@ -366,6 +393,8 @@ void Busca_Profundidade (GrafoA *G) {
 }
 
 
+
+
 /* */
 int main () {
 	GrafoA* grafo = criar_grafo_adj(12);
@@ -374,12 +403,12 @@ int main () {
 	adicionarArestaGrafoAdjDirecionado(0, 3, grafo);
 	adicionarArestaGrafoAdjDirecionado(1, 2, grafo);
 	adicionarArestaGrafoAdjDirecionado(2, 5, grafo);
+	adicionarArestaGrafoAdjDirecionado(4, 1, grafo);
 	adicionarArestaGrafoAdjDirecionado(5, 4, grafo);
 	adicionarArestaGrafoAdjDirecionado(5, 6, grafo);
-	adicionarArestaGrafoAdjDirecionado(6, 4, grafo);
-	adicionarArestaGrafoAdjDirecionado(6, 3, grafo);
 	adicionarArestaGrafoAdjDirecionado(6, 0, grafo);
-	adicionarArestaGrafoAdjDirecionado(4, 1, grafo);
+	adicionarArestaGrafoAdjDirecionado(6, 3, grafo);
+	adicionarArestaGrafoAdjDirecionado(6, 4, grafo);
 
 	adicionarArestaGrafoAdjDirecionado(7, 8, grafo);
 
@@ -388,8 +417,6 @@ int main () {
 	adicionarArestaGrafoAdjDirecionado(11, 9, grafo);
 
 	Busca_Profundidade(grafo);
-
-	printGrafoA(grafo);
 
 	liberar_grafo_adj(grafo);
 }
